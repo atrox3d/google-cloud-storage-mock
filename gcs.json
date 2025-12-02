@@ -1,0 +1,5 @@
+{
+    "FAKE_BUCKETS_ROOT_DIR": "_FAKE_BUCKET/",
+    "PROJECT_DIRNAME": "project_root_dir",
+    "LOG_PREFIX": "FAKE_GOOGLE_CLOUD | "
+}
