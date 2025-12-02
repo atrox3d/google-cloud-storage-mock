@@ -3,32 +3,15 @@ from pathlib import Path
 import shutil
 from util import printstamp, logged
 
+from .config import CONFIG, PROJECT_ROOT
 
-################################################################
-# create/load config
-################################################################
-CONFIG_JSON = Path('gcs.json')
-if CONFIG_JSON.exists():
-    with open(CONFIG_JSON) as fp:
-        CONFIG = json.load(fp)
-    # print(f'{CONFIG = }')
-else:
-    CONFIG = {
-        "FAKE_BUCKETS_ROOT_DIR": "_FAKE_BUCKET/",
-        "PROJECT_DIRNAME": "project_root_dir",
-        "LOG_PREFIX": "FAKE_GOOGLE_CLOUD | "
-    }
 ################################################################
 # creates fake buckets root path
 ################################################################
 FAKE_BUCKETS_ROOT_DIR = CONFIG['FAKE_BUCKETS_ROOT_DIR']
 PROJECT_DIRNAME = CONFIG['PROJECT_DIRNAME']
 LOG_PREFIX = CONFIG['LOG_PREFIX']
-
-pwd = Path.cwd()
-while pwd.name != PROJECT_DIRNAME:
-    pwd = pwd.parent
-FAKE_BUCKETS_ROOT = str(pwd / FAKE_BUCKETS_ROOT_DIR)
+FAKE_BUCKETS_ROOT = str(PROJECT_ROOT / FAKE_BUCKETS_ROOT_DIR)
 ################################################################
 
 DEBUG = False

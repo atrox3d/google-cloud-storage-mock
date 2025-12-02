@@ -1,3 +1,5 @@
+from google.cloud import storage
+
 def main():
     print("Hello from google-cloud-storage-mock!")
 
