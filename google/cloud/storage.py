@@ -1,7 +1,7 @@
 from pathlib import Path
 import shutil
 import logging
-from util import printstamp, logged
+from util import logged
 from .config import (
     get_config, 
     find_project_root,
@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 ################################################################
 # creates fake buckets root path
 ################################################################
+DEBUG = False
 FAKE_BUCKETS_ROOT_DIR = CONFIG['FAKE_BUCKETS_ROOT_DIR']
 PROJECT_DIRNAME = CONFIG['PROJECT_DIRNAME']
 LOG_PREFIX = CONFIG['LOG_PREFIX']
@@ -23,24 +24,34 @@ logger.info(f'{FAKE_BUCKETS_ROOT = }')
 logger.info(f'{PROJECT_DIRNAME = }')
 
 
-DEBUG = False
-
-
-def mock_path(path:Path|str) -> str:
+def mock_path(path:Path|str, buckets_root:str=FAKE_BUCKETS_ROOT) -> str:
+    '''
+    translates a gs:// path to a local path
+    
+    :param path: the gs:// path to translate
+    :type path: Path | str
+    :param buckets_root: the local folder parent of the fake buckets
+    :type buckets_root: str
+    :return: new translated local path
+    :rtype: str
+    '''
     path = str(path) if isinstance(path, Path) else path
     if path.startswith('gs:/'):
-        path = path.replace("gs:/", FAKE_BUCKETS_ROOT)
+        path = path.replace("gs:/", buckets_root)
         return path
     else:
         raise ValueError(f'path must start with "gs:/" : {path = }')
 
 
-def mock_paths(*path_dicts):
-    """
-    Iterates through dictionaries and modifies their string values in-place,
-    replacing 'gs:/' with the local FAKE_BUCKETS_ROOT.
-    This function has side effects.
-    """
+def mock_paths(*path_dicts:dict) -> list[dict]:
+    '''
+    Docstring for mock_paths
+    
+    :param path_dicts: Description
+    :type path_dicts: dict
+    :return: Description
+    :rtype: list[dict]
+    '''
 
     result = []
     logger.info("Mocking GCS paths in-place...")
