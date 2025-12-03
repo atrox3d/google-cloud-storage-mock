@@ -43,29 +43,30 @@ def mock_path(path:Path|str, buckets_root:str=FAKE_BUCKETS_ROOT) -> str:
         raise ValueError(f'path must start with "gs:/" : {path = }')
 
 
-def mock_paths(*path_dicts:dict) -> list[dict]:
+def mock_paths(*path_dicts_or_strings:dict|str, buckets_root:str=FAKE_BUCKETS_ROOT) -> list[dict | str]:
     '''
+    for each dict or string in path_dicts_or_strings
     mocks whatever value in the dicts that is a string beginning with gs:// with a local path
+    or whatever value in the strings
     
-    :param path_dicts: a variable list of dicts separated with commas (like *args)
-    :type path_dicts: dict
+    :param path_dicts_or_strings: a variable list of dicts separated with commas (like *args)
+    :type path_dicts_or_strings: dict|str
     :return: a list of modified dicts
-    :rtype: list[dict]
+    :rtype: list[dict | str]
     '''
 
     result = []
     logger.info("Mocking GCS paths in-place...")
-    for d in path_dicts:
-        if isinstance(d, dict):
-            for key, value in d.items():
+    for item in path_dicts_or_strings:
+        if isinstance(item, dict):
+            for key, value in item.items():
                 if isinstance(value, str):
                     # d[key] = value.replace("gs:/", FAKE_BUCKETS_ROOT)
-                    d[key] = mock_path(value)
+                    item[key] = mock_path(value, buckets_root)
                     
-        # TODO: remove string mocking ???
-        elif isinstance(d, str):
-            d = d.replace("gs:/", FAKE_BUCKETS_ROOT)
-        result.append(d)
+        elif isinstance(item, str):
+            item = mock_path(item, buckets_root)
+        result.append(item)
     
     return result
 
@@ -88,7 +89,7 @@ class Client:
 
 
 class Blob:
-    # @logged(prefix=LOG_PREFIX)
+    # @logged(prefix=LOG_PREFIX)    # dont decorate init, infinite recursion
     def __init__(
             self, 
             name, 
