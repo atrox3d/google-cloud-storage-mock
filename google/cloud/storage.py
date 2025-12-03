@@ -25,13 +25,6 @@ logger.info(f'{PROJECT_DIRNAME = }')
 
 DEBUG = False
 
-def fgcdebug(message: str) -> None:
-    DEBUG and fgclog(message, f'{LOG_PREFIX} DEBUG | ')
-
-
-def fgclog(message: str, prefix:str=LOG_PREFIX) -> None:
-    printstamp(f'{prefix} {message}')
-
 
 def mock_path(path:Path|str) -> str:
     path = str(path) if isinstance(path, Path) else path
@@ -50,7 +43,7 @@ def mock_paths(*path_dicts):
     """
 
     result = []
-    fgclog("Mocking GCS paths in-place...")
+    logger.info("Mocking GCS paths in-place...")
     for d in path_dicts:
         if isinstance(d, dict):
             for key, value in d.items():
@@ -75,9 +68,9 @@ class Client:
         ''' lists all blobs in a bucket path '''
         bucket = self.bucket(bucket_name)
         path = bucket.path / prefix
-        fgcdebug(f'path = {path}')
+        logger.debug(f'path = {path}')
         files = list(path.glob('**/*'))
-        fgcdebug(f'files = {files}')
+        logger.debug(f'files = {files}')
         blobs = [Blob(str(file.relative_to(bucket.path)), bucket) for file in files]   # return glob->Blob
         return blobs
 
@@ -94,7 +87,7 @@ class Blob:
         self.content_type = None
         self.path = self.bucket.path / name
         self.generation = True
-        fgcdebug(f'Blob.path = {self.path}')
+        logger.debug(f'Blob.path = {self.path}')
     
     @logged(prefix=LOG_PREFIX)
     def download_as_string(self, encoding: str | None = None):
@@ -118,21 +111,21 @@ class Blob:
         ''' deletes blob '''
         if self.path.is_file():
             self.path.unlink()
-            fgclog(f"Deleted Blob: {self.path}")
+            logger.info(f"Deleted Blob: {self.path}")
             # Check if the parent directory is now empty and remove it.
             try:
                 if not any(self.path.parent.iterdir()):
-                    fgclog(f"Removing empty parent directory: {self.path.parent}")
+                    logger.info(f"Removing empty parent directory: {self.path.parent}")
                     self.path.parent.rmdir()
             except FileNotFoundError:
                 # This can happen in race conditions or if the parent was already gone.
-                fgclog(f'WARNING | parent directory not found: {self.path.parent}')
+                logger.warning(f'parent directory not found: {self.path.parent}')
                 pass
 
     @logged(prefix=LOG_PREFIX)
     def exists(self, storage_client):
         ''' checks if blob exists'''
-        fgcdebug(f'Blob.path = {self.path}')
+        logger.debug(f'Blob.path = {self.path}')
         exists = self.path.exists()
         return exists
     
@@ -164,7 +157,7 @@ class Bucket:
     def __init__(self, name):
         self.name = name
         self.path = Path(FAKE_BUCKETS_ROOT) / name
-        fgcdebug(f'Bucket.path = {self.path}')
+        logger.info(f'Bucket.path = {self.path}')
     
     @logged(prefix=LOG_PREFIX)
     def blob(self, name) -> Blob:
@@ -177,17 +170,17 @@ class Bucket:
     
     @logged(prefix=LOG_PREFIX)
     def copy_blob(self, source_blob:Blob, dest_bucket:'Bucket', dest_path:str, if_generation_match=0):
-        fgcdebug(f'{dest_bucket = }')
-        fgcdebug(f'{source_blob = }')
-        fgcdebug(f'{dest_path = }')
-        fgcdebug(f'{if_generation_match = }')
+        logger.debug(f'{dest_bucket = }')
+        logger.debug(f'{source_blob = }')
+        logger.debug(f'{dest_path = }')
+        logger.debug(f'{if_generation_match = }')
         source_path:Path = source_blob.path
         dest_path:Path = dest_bucket.blob(dest_path).path
-        fgcdebug(f'{source_path = }')
-        fgcdebug(f'{dest_path = }')
+        logger.debug(f'{source_path = }')
+        logger.debug(f'{dest_path = }')
         dest_path.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(source_path, dest_path)
-        fgclog(f"Successfully copied {source_path} to {dest_path}")    
+        logger.info(f"Successfully copied {source_path} to {dest_path}")    
     
     @logged(prefix=LOG_PREFIX)
 

@@ -1,7 +1,9 @@
 from datetime import datetime
 import inspect
 from typing import Callable
+import logging
 
+logger = logging.getLogger(__name__)
 DEBUG = False
 
 def timestamp(format:str='%y/%m/%d %H:%M:%S') -> str:
@@ -20,11 +22,9 @@ def logged(prefix:str=''):
                 result = fn(*args, **kwargs)
                 return result
             finally:
-                DEBUG and printstamp(f'{prefix}{fn.__name__}({args}, {kwargs})')
+                logger.debug(f'{prefix}{fn.__name__}({args}, {kwargs})')
         return wrapper
     return decorator
-
-
 
 
 def stack_logger(str_message):
