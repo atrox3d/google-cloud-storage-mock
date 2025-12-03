@@ -1,5 +1,5 @@
 {
     "FAKE_BUCKETS_ROOT_DIR": "_FAKE_BUCKET/",
-    "PROJECT_DIRNAME": "google-cloud-storage-mock",
+    "PROJECT_DIRNAME": null,
     "LOG_PREFIX": "FAKE_GOOGLE_CLOUD | "
 }

@@ -1,9 +1,15 @@
-import sys, json
 from pathlib import Path
 import shutil
+import logging
 from util import printstamp, logged
+from .config import (
+    get_config, 
+    find_project_root,
+    CONFIG, 
+    PROJECT_ROOT
+)
 
-from .config import CONFIG, PROJECT_ROOT
+logger = logging.getLogger(__name__)
 
 ################################################################
 # creates fake buckets root path
@@ -13,6 +19,9 @@ PROJECT_DIRNAME = CONFIG['PROJECT_DIRNAME']
 LOG_PREFIX = CONFIG['LOG_PREFIX']
 FAKE_BUCKETS_ROOT = str(PROJECT_ROOT / FAKE_BUCKETS_ROOT_DIR)
 ################################################################
+logger.info(f'{FAKE_BUCKETS_ROOT = }')
+logger.info(f'{PROJECT_DIRNAME = }')
+
 
 DEBUG = False
 
