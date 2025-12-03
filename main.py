@@ -10,7 +10,9 @@ logger = logging.getLogger(__name__)
 
 def main():
     print("Hello from google-cloud-storage-mock!")
-
+    client = storage.Client()
+    bucket = client.bucket("my-bucket")
+    blob = bucket.blob("my-blob")
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,9 @@
 import logging
+
 from .config import CONFIG
 from util import logged
+from .bucket import Bucket
+from .blob import Blob
 
 logger = logging.getLogger(__name__)
 LOG_PREFIX = CONFIG['LOG_PREFIX']

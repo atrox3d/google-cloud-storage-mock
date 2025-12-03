@@ -100,4 +100,5 @@ def find_project_root(project_dir_name:str=None) -> Path:
 PROJECT_ROOT = find_project_root()
 CONFIG = get_config(project_root_path=PROJECT_ROOT)
 CONFIG['PROJECT_DIRNAME'] = CONFIG.get('PROJECT_DIRNAME') or PROJECT_ROOT.name
+CONFIG['FAKE_BUCKETS_ROOT'] = str(PROJECT_ROOT / CONFIG['FAKE_BUCKETS_ROOT_DIR'])
 logger.info(f'{CONFIG = }')
