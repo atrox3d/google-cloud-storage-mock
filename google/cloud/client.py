@@ -10,11 +10,11 @@ LOG_PREFIX = CONFIG['LOG_PREFIX']
 
 class Client:
     # @logged(prefix=LOG_PREFIX)
-    def bucket(self, bucket_name) -> 'Bucket':
+    def bucket(self, bucket_name) -> Bucket:
         return Bucket(bucket_name)
     
-    @logged(prefix=LOG_PREFIX)
-    def list_blobs(self, bucket_name, prefix, fields):
+    # @logged(prefix=LOG_PREFIX)
+    def list_blobs(self, bucket_name, prefix, fields) -> list[Blob]:
         ''' lists all blobs in a bucket path '''
         bucket = self.bucket(bucket_name)
         path = bucket.path / prefix
