@@ -13,7 +13,7 @@ AUTO_CREATE_DIRS = CONFIG['AUTO_CREATE_DIRS']
 
 
 class Bucket:
-    @logged(prefix=LOG_PREFIX)
+    # @logged(prefix=LOG_PREFIX)
     def __init__(self, name:str, auto_create_dirs:bool=AUTO_CREATE_DIRS):
         self.name = name
         self.auto_create_dirs = auto_create_dirs
@@ -24,7 +24,7 @@ class Bucket:
             logger.info(f'creating bucket directory...')
             self.path.mkdir(parents=True, exist_ok=True)
     
-    # @logged(prefix=LOG_PREFIX)
+    @logged(prefix=LOG_PREFIX)
     def blob(self, name) -> Blob:
         return Blob(name, self)
     

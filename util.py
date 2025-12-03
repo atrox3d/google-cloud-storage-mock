@@ -1,10 +1,11 @@
 from datetime import datetime
 import inspect
-from typing import Callable
+from typing import Callable, TypeVar
 import logging
 
 logger = logging.getLogger(__name__)
 DEBUG = False
+T = TypeVar('T')
 
 def timestamp(format:str='%y/%m/%d %H:%M:%S') -> str:
     return datetime.now().strftime(format)
@@ -16,10 +17,10 @@ def printstamp(message:str) -> None:
 
 
 def logged(prefix:str=''):
-    def decorator(fn:Callable) -> Callable:
-        def wrapper(*args, **kwargs):
+    def decorator(fn: Callable[..., T]) -> Callable[..., T]:
+        def wrapper(*args, **kwargs) -> T:
             try:
-                result = fn(*args, **kwargs)
+                result: T = fn(*args, **kwargs)
                 return result
             finally:
                 logger.debug(f'{prefix}{fn.__name__}({args}, {kwargs})')
