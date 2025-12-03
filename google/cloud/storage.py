@@ -45,11 +45,11 @@ def mock_path(path:Path|str, buckets_root:str=FAKE_BUCKETS_ROOT) -> str:
 
 def mock_paths(*path_dicts:dict) -> list[dict]:
     '''
-    Docstring for mock_paths
+    mocks whatever value in the dicts that is a string beginning with gs:// with a local path
     
-    :param path_dicts: Description
+    :param path_dicts: a variable list of dicts separated with commas (like *args)
     :type path_dicts: dict
-    :return: Description
+    :return: a list of modified dicts
     :rtype: list[dict]
     '''
 
@@ -61,7 +61,8 @@ def mock_paths(*path_dicts:dict) -> list[dict]:
                 if isinstance(value, str):
                     # d[key] = value.replace("gs:/", FAKE_BUCKETS_ROOT)
                     d[key] = mock_path(value)
-
+                    
+        # TODO: remove string mocking ???
         elif isinstance(d, str):
             d = d.replace("gs:/", FAKE_BUCKETS_ROOT)
         result.append(d)
