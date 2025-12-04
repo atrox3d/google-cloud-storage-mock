@@ -1,0 +1,13 @@
+{
+    // Tells the Python extension to load the .env file, which sets PYTHONPATH.
+    // This ensures that tests run via the VS Code UI can find the project's modules.
+    // "python.envFile": "${workspaceFolder}/.env",
+    "python.testing.pytestArgs": [
+        "tests",
+        // "-s",
+        // "--log-level=DEBUG",
+        // "--log-cli-level=DEBUG",
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}

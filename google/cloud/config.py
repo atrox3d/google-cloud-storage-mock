@@ -5,10 +5,12 @@ import sys
 
 logger = logging.getLogger(__name__)
 
+
 DEFAULT_CONFIG = {
     "FAKE_BUCKETS_ROOT_DIR": "_FAKE_BUCKET/",
     "PROJECT_DIRNAME": sys.path[0],
-    "LOG_PREFIX": "FAKE_GOOGLE_CLOUD | "
+    "LOG_PREFIX": "FAKE_GOOGLE_CLOUD | ",
+    "AUTO_CREATE_DIRS": True
 }
 
 
@@ -93,7 +95,8 @@ def find_project_root(project_dir_name:str=None) -> Path:
                 raise FileNotFoundError(f'cannot find {project_dir_name}')
         project_root_path = pwd
     else:
-        project_root_path = Path(sys.path[0])
+        # try to skyp python path injected from pytest
+        project_root_path = Path(sys.path[0] if 'test' not in sys.path[0] else sys.path[1])
     return project_root_path
 
 
