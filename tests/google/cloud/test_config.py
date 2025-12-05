@@ -59,7 +59,7 @@ def config_json(request):
     logger.info(f'removing {remove}')
     assert remove != cwd
     assert remove.is_relative_to(cwd)
-    shutil.rmtree(config_dir.parent)
+    shutil.rmtree(remove)
 
 
 # def test_fixture(config_json:Path):
