@@ -83,8 +83,5 @@ def test_blob_auto_create_dirs():
     assert blob.path.parent.exists() == True
     remove = bucket.path / Path(BLOB_PATH).parts[0]
     shutil.rmtree(remove)
-    
-    # blob.path.parent.rmdir()
-    # bucket.path.exists() and bucket.path.rmdir()
     bucket.path.rmdir()
     
