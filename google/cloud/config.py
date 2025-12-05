@@ -71,7 +71,6 @@ def get_config(
     else:
         logger.info(f'{config_json} not found, creating default config')
         config = DEFAULT_CONFIG
-    logger.info(f'{config = }')
     return config
 
 
@@ -88,6 +87,7 @@ def find_project_root(project_dir_name:str=None) -> Path:
     '''
     if project_dir_name:
         pwd = Path.cwd()
+        logger.info(f'searching for {project_dir_name} inside {pwd}...')
         while pwd.name != project_dir_name:
             pwd = pwd.parent
             if pwd == Path('/').resolve():
@@ -95,13 +95,23 @@ def find_project_root(project_dir_name:str=None) -> Path:
                 raise FileNotFoundError(f'cannot find {project_dir_name}')
         project_root_path = pwd
     else:
-        # try to skyp python path injected from pytest
-        project_root_path = Path(sys.path[0] if 'test' not in sys.path[0] else sys.path[1])
+        logger.info('no project name specified, trying to find project root in sys.path...')
+        # try to skip python path injected from pytest
+        if 'test' in sys.path[0]:
+            logger.info(f'sys.path[0] contains test, probable pytest inject, using sys.path[1]')
+            logger.info(f'{sys.path[1] = } ')
+            project_root_path = Path(sys.path[1])
+        else:
+            logger.info(f'{sys.path[0] = } ')
+            project_root_path = Path(sys.path[0])
     return project_root_path
 
 
 PROJECT_ROOT = find_project_root()
+logger.info(f'{PROJECT_ROOT = }')
 CONFIG = get_config(project_root_path=PROJECT_ROOT)
+logger.info(f'original {CONFIG = }')
+CONFIG['PROJECT_ROOT'] = CONFIG.get('PROJECT_ROOT') or str(PROJECT_ROOT)
 CONFIG['PROJECT_DIRNAME'] = CONFIG.get('PROJECT_DIRNAME') or PROJECT_ROOT.name
-CONFIG['FAKE_BUCKETS_ROOT'] = str(PROJECT_ROOT / CONFIG['FAKE_BUCKETS_ROOT_DIR'])
-logger.info(f'{CONFIG = }')
+CONFIG['FAKE_BUCKETS_ROOT'] = CONFIG.get('FAKE_BUCKETS_ROOT') or str(PROJECT_ROOT / CONFIG['FAKE_BUCKETS_ROOT_DIR'])
+logger.info(f'fixed {CONFIG = }')
