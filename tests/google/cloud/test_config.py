@@ -58,3 +58,7 @@ def test_fixture(config_json:Path):
     assert config_json.exists()
 
 
+def test_find_config_no_project_root(config_json):
+    config = _find_config('gcs.json')
+    logger.info(f'{config = }')
+    assert config == config_json

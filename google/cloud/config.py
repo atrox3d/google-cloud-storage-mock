@@ -39,11 +39,12 @@ def _find_config(
             logger.info(f'found {config_json}')
         except StopIteration:
             logger.info(f'{config_json_filename} not found, creating default config')
-    elif Path(config_json_filename).exists():
+    elif Path(config_json_filename).resolve().exists():
         # try directly in current pwd
-        logger.info(f'no project root available, using path {config_json}...')
-        config_json = Path(config_json_filename)
+        logger.info(f'no project root available, using path {config_json_filename}...')
+        config_json = Path(config_json_filename).resolve()
     else:
+        logger.warning(f'{config_json_filename} not found')
         config_json = None
     return config_json
 
