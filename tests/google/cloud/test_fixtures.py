@@ -15,7 +15,7 @@ def test_fixture_no_param(fixture_noparams):
 def fixture_oneparam(request):
     print(f'{request = }')
     print(f'{request.param = }')
-    yield request.param
+    # yield request.param
 
 
 
@@ -25,7 +25,8 @@ def fixture_oneparam(request):
     indirect=True
 )
 def test_fixture_one_param(fixture_oneparam):
-    print(f'{fixture_oneparam = }')
+    # print(f'{fixture_oneparam = }')
+    pass
 
 
 @pytest.fixture

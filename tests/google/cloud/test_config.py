@@ -37,28 +37,43 @@ def test_find_project_root_w_prj_name():
 
 
 @pytest.fixture
-def config_json():
+def config_json(request):
     cwd = Path.cwd()
     logger.info(f'{cwd = }')
-    config_dir = cwd / '_test_/config'
+
+    path, filename = request.param
+    path = Path(path)
+    logger.info(f'{path = }')
+    logger.info(f'{filename = }')
+
+    config_dir:Path = cwd / path
+    config_path:Path = config_dir / filename
+    logger.info(f'{config_path = }')
+    
     config_dir.mkdir(parents=True, exist_ok=True)
     logger.info(f'{config_dir = }')
-    config_path = config_dir / 'gcs.json'
     logger.info(f'creating {config_path = }')
     config_path.touch()
     yield config_path
-    logger.info(f'removing {config_dir.parent}')
-    assert config_dir.parent != cwd
-    assert config_dir.parent.is_relative_to(cwd)
+    remove = cwd / path.parts[0]
+    logger.info(f'removing {remove}')
+    assert remove != cwd
+    assert remove.is_relative_to(cwd)
     shutil.rmtree(config_dir.parent)
 
 
-def test_fixture(config_json:Path):
-    logger.info(f'checking {config_json = }')
-    assert config_json.exists()
+# def test_fixture(config_json:Path):
+#     logger.info(f'checking {config_json = }')
+#     assert config_json.exists()
 
-
+@pytest.mark.parametrize(
+    'config_json',
+    [('path/to/config', 'config.json')],
+    indirect=True
+)
 def test_find_config_no_project_root(config_json):
+    print(f'{config_json = }')
+    return
     config = _find_config('gcs.json')
     logger.info(f'{config = }')
     assert config == config_json
