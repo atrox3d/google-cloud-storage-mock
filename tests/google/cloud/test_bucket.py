@@ -28,3 +28,17 @@ def test_new_bucket_auto_create_dirs():
     assert bucket.path == bucket_path
     assert bucket.path.exists()
     assert bucket.path.is_dir()
+
+
+def test_new_bucket_dont_create_dirs():
+    logger.info(f'{storage.FAKE_BUCKETS_ROOT = }')
+    BUCKET_DIRNAME = 'test-bucket'
+
+    bucket_path = Path(storage.FAKE_BUCKETS_ROOT) / BUCKET_DIRNAME
+    bucket_path.exists() and bucket_path.rmdir()
+    assert bucket_path.exists() == False
+
+    bucket = storage.Bucket(BUCKET_DIRNAME, auto_create_dirs=False)
+    logger.info(f'{bucket.path = }')
+    assert bucket.path == bucket_path
+    assert bucket.path.exists() == False
