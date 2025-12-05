@@ -26,7 +26,7 @@ class Bucket:
     
     @logged(prefix=LOG_PREFIX)
     def blob(self, name) -> Blob:
-        return Blob(name, self)
+        return Blob(name, self, self.auto_create_dirs)
     
     # @logged(prefix=LOG_PREFIX)
     def get_blob(self, name) -> Blob:
