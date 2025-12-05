@@ -19,7 +19,7 @@ from google.cloud.config import (
 logger = logging.getLogger(__name__)
 
 
-def test_automaitic_config():
+def test_automatic_config():
     logger.info(f'{CONFIG = }')
     logger.info(f'{sys.path[:2] = }')
     assert CONFIG['PROJECT_ROOT'] == sys.path[1]
@@ -34,4 +34,27 @@ def test_find_project_root_w_prj_name():
     root = find_project_root('google-cloud-storage-mock')
     print(f'{root = }')
     assert root == Path(sys.path[1])
+
+
+@pytest.fixture
+def config_json():
+    cwd = Path.cwd()
+    logger.info(f'{cwd = }')
+    config_dir = cwd / '_test_/config'
+    config_dir.mkdir(parents=True, exist_ok=True)
+    logger.info(f'{config_dir = }')
+    config_path = config_dir / 'gcs.json'
+    logger.info(f'creating {config_path = }')
+    config_path.touch()
+    yield config_path
+    logger.info(f'removing {config_dir.parent}')
+    assert config_dir.parent != cwd
+    assert config_dir.parent.is_relative_to(cwd)
+    shutil.rmtree(config_dir.parent)
+
+
+def test_fixture(config_json:Path):
+    logger.info(f'checking {config_json = }')
+    assert config_json.exists()
+
 
