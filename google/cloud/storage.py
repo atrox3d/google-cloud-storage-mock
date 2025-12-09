@@ -1,5 +1,5 @@
 from pathlib import Path
-from util import setup_logger
+from .util import setup_logger
 from .config import get_config
 
 # expose API

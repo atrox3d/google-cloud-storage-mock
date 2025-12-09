@@ -1,6 +1,6 @@
 import logging
 from .config import get_config
-from util import setup_logger
+from .util import setup_logger
 
 logger = setup_logger(__name__)
 CONFIG = get_config()

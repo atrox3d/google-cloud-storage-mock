@@ -3,7 +3,7 @@ from pathlib import Path
 import shutil
 
 from .config import get_config
-from util import logged, setup_logger
+from .util import logged, setup_logger
 from .blob import Blob
 
 logger = setup_logger(__name__)

@@ -1,8 +1,7 @@
 import json
 from pathlib import Path
-import logging
 import sys
-from util import setup_logger
+from .util import setup_logger
 
 
 logger = setup_logger(__name__)

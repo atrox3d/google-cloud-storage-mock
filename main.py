@@ -1,6 +1,5 @@
-import logging
 from google.cloud import storage
-from util import setup_logger
+from google.cloud.util import setup_logger
 
 logger = setup_logger(__name__)
 
