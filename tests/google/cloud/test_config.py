@@ -37,11 +37,14 @@ def test_find_project_root_w_prj_name():
     assert root == Path(sys.path[1])
 
 
-@pytest.fixture
-def fixture_config_json(request):
+@pytest.fixture(params=[
+    ('path/to/config', 'config.json'),
+    ('another/path', 'gcs.json'),
+])
+def config_file_path(request):
     '''
-    Fixture, create temp config json file in temp path
-    as specified by @pytest.mark.parametrize
+    A parametrized fixture that creates a temporary config file in a temporary
+    directory. It yields the absolute path to the file and handles teardown.
     
     :param request: object containing param attribute:
         a tuple of (relative_path, filename)
@@ -82,24 +85,22 @@ def fixture_config_json(request):
     shutil.rmtree(root_of_test_path)
 
 
-@pytest.mark.parametrize(
-    'fixture_config_json',
-    [('path/to/config', 'config.json')],
-    indirect=True
-)
-def test_fixture(fixture_config_json:Path):
-    logger.info(f'checking {fixture_config_json = }')
-    assert fixture_config_json.exists()
+@pytest.fixture
+def config_path(config_file_path):
+    """A simple fixture that depends on the parametrized one to provide a clean name for tests."""
+    return config_file_path
 
 
-@pytest.mark.parametrize(
-    'fixture_config_json',
-    [('path/to/config', 'config.json')],
-    indirect=True
-)
-def test_find_config_no_project_root(fixture_config_json):
-    logger.info(f'{fixture_config_json = }')
+def test_fixture_creates_file(config_path: Path):
+    """This test will run for each parameter set in `config_file_path`."""
+    logger.info(f'checking {config_path = }')
+    assert config_path.exists()
+
+
+def test_find_config_no_project_root(config_path: Path):
+    """This test will also run for each parameter set."""
+    logger.info(f'{config_path = }')
     return
-    config = _find_config('gcs.json')
+    config = _find_config(config_path.name)
     logger.info(f'{config = }')
-    assert config == fixture_config_json
+    assert config == config_path
