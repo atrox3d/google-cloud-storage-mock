@@ -71,30 +71,49 @@ def config_file_path(request):
 
 
 def test_fixture_creates_file(config_file_path: Path):
-    """tests that the fixture correctly creates dirs and file"""
+    """
+    tests that the fixture correctly creates dirs and file
+    """
     logger.info(f'checking {config_file_path = }')
-    assert config_file_path.exists()
+    try:
+        assert config_file_path.exists()
+    except:
+        # alternatively add -x or --exitfirst in pytest params
+        pytest.exit(f'fixture failed to create file: {config_file_path=}')
 
 
-def test_automatic_config():
+def test_automatic_config_project_root_is_correct():
+    '''
+    tests that the key PROJECT_ROOT matches the project root path
+    '''
     logger.info(f'{CONFIG = }')
     logger.info(f'{sys.path[:2] = }')
     assert CONFIG['PROJECT_ROOT'] == sys.path[1]
 
 
 def test_find_project_root_no_prj_name():
+    '''
+    tests that find_project_root finds the project root path without specifying project name
+    '''
     root = find_project_root()
+    assert str(root) in sys.path[:2]
     assert root == Path(sys.path[1])
 
 
 def test_find_project_root_w_prj_name():
+    '''
+    tests that find_project_root finds the project root path specifying project name
+    '''
     root = find_project_root('google-cloud-storage-mock')
-    print(f'{root = }')
+    logger.info(f'{root = }')
+    assert str(root) in sys.path[:2]
     assert root == Path(sys.path[1])
 
 
-def test_find_config_no_project_root_path_specified(config_file_path: Path):
-    """This test will also run for each parameter set."""
+def test_find_config_not_found_when_no_project_root_path_specified(config_file_path: Path):
+    '''
+    tests that _find_config does not find the config file when no project root path is specified
+    '''
     logger.info(f'{config_file_path = }')
     # passing just the file name, it won't find it
     config = _find_config(config_file_path.name)
@@ -102,8 +121,10 @@ def test_find_config_no_project_root_path_specified(config_file_path: Path):
     assert config == None
 
 
-def test_find_config_with_project_root_path_specified(config_file_path: Path):
-    """This test will also run for each parameter set."""
+def test_find_config_success_when_project_root_path_specified(config_file_path: Path):
+    '''
+    tests that _find_config finds the config file when no project root path is specified
+    '''
     logger.info(f'{config_file_path = }')
     # passing just the file name, it won't find it
     config = _find_config(config_file_path.name, Path.cwd())
