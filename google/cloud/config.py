@@ -2,8 +2,10 @@ import json
 from pathlib import Path
 import logging
 import sys
+from util import setup_logger
 
-logger = logging.getLogger(__name__)
+
+logger = setup_logger(__name__)
 
 
 __DEFAULT_CONFIG = {

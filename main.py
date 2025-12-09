@@ -1,14 +1,8 @@
 import logging
 from google.cloud import storage
+from util import setup_logger
 
-
-logging.basicConfig(
-    format='%(asctime)s | %(levelname)-8s | %(module)10s | %(funcName)15s | %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    level=logging.INFO
-)
-
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
 
 def main():
     print("Hello from google-cloud-storage-mock!")

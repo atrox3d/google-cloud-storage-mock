@@ -3,10 +3,10 @@ from pathlib import Path
 import shutil
 
 from .config import get_config
-from util import logged
+from util import logged, setup_logger
 from .blob import Blob
 
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
 CONFIG = get_config()
 LOG_PREFIX = CONFIG['LOG_PREFIX']
 FAKE_BUCKETS_ROOT = CONFIG['FAKE_BUCKETS_ROOT']

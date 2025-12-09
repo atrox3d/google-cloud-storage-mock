@@ -1,19 +1,13 @@
 from pathlib import Path
-import shutil
-import logging
-from util import logged
-from .config import (
-    get_config, 
-    find_project_root,
-    # CONFIG, 
-    # PROJECT_ROOT
-)
+from util import setup_logger
+from .config import get_config
 
+# expose API
 from .client import Client
 from .bucket import Bucket
 from .blob import Blob
 
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
 
 ################################################################
 # creates fake buckets root path

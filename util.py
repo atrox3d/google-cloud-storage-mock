@@ -3,9 +3,30 @@ import inspect
 from typing import Callable, TypeVar
 import logging
 
-logger = logging.getLogger(__name__)
 DEBUG = False
 T = TypeVar('T')
+
+
+def setup_logger(
+        name:str, 
+        level:int=logging.INFO,
+        format='%(asctime)s | %(levelname)-8s | %(module)10s | %(funcName)15s | %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+        force:bool=True
+) -> logging.Logger:
+    '''
+    Unified source of truth for logging configuration
+    '''
+    logging.basicConfig(
+        format=format,
+        datefmt=datefmt,
+        level=level,
+        force=force
+    )
+    return logging.getLogger(name)
+
+
+logger = setup_logger(__name__)
 
 def timestamp(format:str='%y/%m/%d %H:%M:%S') -> str:
     return datetime.now().strftime(format)

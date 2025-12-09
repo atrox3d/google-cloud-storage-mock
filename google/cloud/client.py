@@ -1,11 +1,11 @@
 import logging
 
 from .config import get_config
-from util import logged
+from util import setup_logger
 from .bucket import Bucket
 from .blob import Blob
 
-logger = logging.getLogger(__name__)
+logger = setup_logger(__name__)
 CONFIG = get_config()
 LOG_PREFIX = CONFIG['LOG_PREFIX']
 
