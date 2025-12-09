@@ -6,14 +6,14 @@ import sys
 logger = logging.getLogger(__name__)
 
 
-DEFAULT_CONFIG = {
+__DEFAULT_CONFIG = {
     "FAKE_BUCKETS_ROOT_DIR": "_FAKE_BUCKET/",
     "PROJECT_DIRNAME": sys.path[0],
     "LOG_PREFIX": "FAKE_GOOGLE_CLOUD | ",
     "AUTO_CREATE_DIRS": True
 }
 
-CONFIG = None
+__CONFIG = None
 
 def find_project_root(project_dir_name:str=None) -> Path:
     '''
@@ -108,7 +108,7 @@ def get_base_config(
             config = json.load(fp)
     else:
         logger.info(f'{config_json} not found, creating default config')
-        config = DEFAULT_CONFIG
+        config = __DEFAULT_CONFIG
     return config
 
 
@@ -117,19 +117,19 @@ def get_config(
     project_root_path:Path=None,
     force:bool=False
 ) -> dict[str, str]:
-    global CONFIG
+    global __CONFIG
 
-    if not CONFIG or force:
+    if not __CONFIG or force:
         logger.warning(f'reloading config')
         PROJECT_ROOT = project_root_path or find_project_root()
         logger.info(f'{PROJECT_ROOT = }')
         # CONFIG = get_config(project_root_path=PROJECT_ROOT)
-        CONFIG = get_base_config(config_json_filename, PROJECT_ROOT)
-        logger.info(f'original {CONFIG = }')
-        CONFIG['PROJECT_ROOT'] = CONFIG.get('PROJECT_ROOT') or str(PROJECT_ROOT)
-        CONFIG['PROJECT_DIRNAME'] = CONFIG.get('PROJECT_DIRNAME') or PROJECT_ROOT.name
-        CONFIG['FAKE_BUCKETS_ROOT'] = CONFIG.get('FAKE_BUCKETS_ROOT') or str(PROJECT_ROOT / CONFIG['FAKE_BUCKETS_ROOT_DIR'])
-        logger.info(f'fixed {CONFIG = }')
+        __CONFIG = get_base_config(config_json_filename, PROJECT_ROOT)
+        logger.info(f'original {__CONFIG = }')
+        __CONFIG['PROJECT_ROOT'] = __CONFIG.get('PROJECT_ROOT') or str(PROJECT_ROOT)
+        __CONFIG['PROJECT_DIRNAME'] = __CONFIG.get('PROJECT_DIRNAME') or PROJECT_ROOT.name
+        __CONFIG['FAKE_BUCKETS_ROOT'] = __CONFIG.get('FAKE_BUCKETS_ROOT') or str(PROJECT_ROOT / __CONFIG['FAKE_BUCKETS_ROOT_DIR'])
+        logger.info(f'fixed {__CONFIG = }')
     else:
         logger.info(f'using cached config')
-    return CONFIG
+    return __CONFIG

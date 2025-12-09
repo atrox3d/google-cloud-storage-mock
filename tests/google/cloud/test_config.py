@@ -10,7 +10,7 @@ logging.basicConfig(
 )
 
 from google.cloud.config import (
-    CONFIG, 
+    # __CONFIG, 
     find_project_root, 
     get_config, 
     _find_config
@@ -22,6 +22,12 @@ logger = logging.getLogger(__name__)
 
 FAKE_CONFIG_DIR = 'path/to/config'
 FAKE_CONFIG_FILENAME = 'config.json'
+
+
+@pytest.fixture(scope='session')
+def CONFIG():
+    return get_config()
+
 
 @pytest.fixture(params=[
     (FAKE_CONFIG_DIR, FAKE_CONFIG_FILENAME),
@@ -82,7 +88,7 @@ def test_fixture_creates_file(config_file_path: Path):
         pytest.exit(f'fixture failed to create file: {config_file_path=}')
 
 
-def test_automatic_config_project_root_is_correct():
+def test_automatic_config_project_root_is_correct(CONFIG):
     '''
     tests that the key PROJECT_ROOT matches the project root path
     '''
