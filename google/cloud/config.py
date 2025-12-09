@@ -143,9 +143,9 @@ def get_config(
 
         # update live values
         logger
-        __CONFIG['PROJECT_ROOT'] = __CONFIG.get('PROJECT_ROOT') or str(PROJECT_ROOT)
-        __CONFIG['PROJECT_DIRNAME'] = __CONFIG.get('PROJECT_DIRNAME') or PROJECT_ROOT.name
-        __CONFIG['FAKE_BUCKETS_ROOT'] = __CONFIG.get('FAKE_BUCKETS_ROOT') or str(PROJECT_ROOT / __CONFIG['FAKE_BUCKETS_ROOT_DIR'])
+        __CONFIG['PROJECT_ROOT']      = __CONFIG.get('PROJECT_ROOT'      , str(PROJECT_ROOT))
+        __CONFIG['PROJECT_DIRNAME']   = __CONFIG.get('PROJECT_DIRNAME'   , PROJECT_ROOT.name)
+        __CONFIG['FAKE_BUCKETS_ROOT'] = __CONFIG.get('FAKE_BUCKETS_ROOT' , str(PROJECT_ROOT / __CONFIG['FAKE_BUCKETS_ROOT_DIR']))
         logger.info(f'fixed {__CONFIG = }')
     else:
         logger.info(f'using cached config')
