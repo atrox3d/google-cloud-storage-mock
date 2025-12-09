@@ -107,9 +107,9 @@ def get_base_config(
         logger.info(f'loading config from {config_json}...')
         with open(config_json) as fp:
             config = json.load(fp)
-    else:
-        logger.info(f'{config_json} not found, creating default config')
-        config = __DEFAULT_CONFIG
+    # else:
+    #     logger.info(f'{config_json} not found, creating default config')
+    #     config = __DEFAULT_CONFIG
     return config
 
 
@@ -124,9 +124,25 @@ def get_config(
         logger.warning(f'reloading config')
         PROJECT_ROOT = project_root_path or find_project_root()
         logger.info(f'{PROJECT_ROOT = }')
-        # CONFIG = get_config(project_root_path=PROJECT_ROOT)
+
+        logger.info('loading config...')
+        # get config from file or default
         __CONFIG = get_base_config(config_json_filename, PROJECT_ROOT)
-        logger.info(f'original {__CONFIG = }')
+        if not __CONFIG:
+            logger.warning(f'no config found, using defaults')
+            __CONFIG = __DEFAULT_CONFIG
+        else:
+            # merge config with defaults, add missing or None values from defaults
+            logger.info(f'loaded {__CONFIG = }')
+            logger.info(f'merging config with {__DEFAULT_CONFIG = }')
+            __CONFIG = {
+                k: __CONFIG.get(k, __DEFAULT_CONFIG.get(k))
+                for k in __DEFAULT_CONFIG.keys()
+            }
+            logger.info(f'merged {__CONFIG = }')
+
+        # update live values
+        logger
         __CONFIG['PROJECT_ROOT'] = __CONFIG.get('PROJECT_ROOT') or str(PROJECT_ROOT)
         __CONFIG['PROJECT_DIRNAME'] = __CONFIG.get('PROJECT_DIRNAME') or PROJECT_ROOT.name
         __CONFIG['FAKE_BUCKETS_ROOT'] = __CONFIG.get('FAKE_BUCKETS_ROOT') or str(PROJECT_ROOT / __CONFIG['FAKE_BUCKETS_ROOT_DIR'])
