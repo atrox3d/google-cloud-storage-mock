@@ -20,26 +20,11 @@ from google.cloud.config import (
 logger = logging.getLogger(__name__)
 
 
-def test_automatic_config():
-    logger.info(f'{CONFIG = }')
-    logger.info(f'{sys.path[:2] = }')
-    assert CONFIG['PROJECT_ROOT'] == sys.path[1]
-
-
-def test_find_project_root_no_prj_name():
-    root = find_project_root()
-    assert root == Path(sys.path[1])
-
-
-def test_find_project_root_w_prj_name():
-    root = find_project_root('google-cloud-storage-mock')
-    print(f'{root = }')
-    assert root == Path(sys.path[1])
-
+FAKE_CONFIG_DIR = 'path/to/config'
+FAKE_CONFIG_FILENAME = 'config.json'
 
 @pytest.fixture(params=[
-    ('path/to/config', 'config.json'),
-    # ('another/path', 'gcs.json'),
+    (FAKE_CONFIG_DIR, FAKE_CONFIG_FILENAME),
 ])
 def config_file_path(request):
     '''
@@ -85,22 +70,42 @@ def config_file_path(request):
     shutil.rmtree(root_of_test_path)
 
 
-@pytest.fixture
-def config_path(config_file_path):
-    """A simple fixture that depends on the parametrized one to provide a clean name for tests."""
-    return config_file_path
+def test_fixture_creates_file(config_file_path: Path):
+    """tests that the fixture correctly creates dirs and file"""
+    logger.info(f'checking {config_file_path = }')
+    assert config_file_path.exists()
 
 
-def test_fixture_creates_file(config_path: Path):
-    """This test will run for each parameter set in `config_file_path`."""
-    logger.info(f'checking {config_path = }')
-    assert config_path.exists()
+def test_automatic_config():
+    logger.info(f'{CONFIG = }')
+    logger.info(f'{sys.path[:2] = }')
+    assert CONFIG['PROJECT_ROOT'] == sys.path[1]
 
 
-def test_find_config_no_project_root(config_path: Path):
+def test_find_project_root_no_prj_name():
+    root = find_project_root()
+    assert root == Path(sys.path[1])
+
+
+def test_find_project_root_w_prj_name():
+    root = find_project_root('google-cloud-storage-mock')
+    print(f'{root = }')
+    assert root == Path(sys.path[1])
+
+
+def test_find_config_no_project_root_path_specified(config_file_path: Path):
     """This test will also run for each parameter set."""
-    logger.info(f'{config_path = }')
-    return
-    config = _find_config(config_path.name)
+    logger.info(f'{config_file_path = }')
+    # passing just the file name, it won't find it
+    config = _find_config(config_file_path.name)
     logger.info(f'{config = }')
-    assert config == config_path
+    assert config == None
+
+
+def test_find_config_with_project_root_path_specified(config_file_path: Path):
+    """This test will also run for each parameter set."""
+    logger.info(f'{config_file_path = }')
+    # passing just the file name, it won't find it
+    config = _find_config(config_file_path.name, Path.cwd())
+    logger.info(f'{config = }')
+    assert config == config_file_path

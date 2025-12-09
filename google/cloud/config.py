@@ -35,10 +35,13 @@ def _find_config(
     if project_root_path:
         logger.info(f'searching {config_json_filename} in {project_root_path}...')
         try:
-            config_json = next(project_root_path.glob(config_json_filename))
+            found_files = project_root_path.rglob(config_json_filename)
+            # found_files = list(found_files)
+            # found_files = iter(found_files)
+            config_json = next(found_files)
             logger.info(f'found {config_json}')
         except StopIteration:
-            logger.info(f'{config_json_filename} not found, creating default config')
+            logger.info(f'{config_json_filename} not found in {project_root_path}')
     elif Path(config_json_filename).resolve().exists():
         # try directly in current pwd
         logger.info(f'no project root available, using path {config_json_filename}...')
