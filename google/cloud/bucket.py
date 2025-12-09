@@ -2,11 +2,12 @@ import logging
 from pathlib import Path
 import shutil
 
-from .config import CONFIG
+from .config import get_config
 from util import logged
 from .blob import Blob
 
 logger = logging.getLogger(__name__)
+CONFIG = get_config()
 LOG_PREFIX = CONFIG['LOG_PREFIX']
 FAKE_BUCKETS_ROOT = CONFIG['FAKE_BUCKETS_ROOT']
 AUTO_CREATE_DIRS = CONFIG['AUTO_CREATE_DIRS']

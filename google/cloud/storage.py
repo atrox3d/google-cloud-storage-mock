@@ -5,8 +5,8 @@ from util import logged
 from .config import (
     get_config, 
     find_project_root,
-    CONFIG, 
-    PROJECT_ROOT
+    # CONFIG, 
+    # PROJECT_ROOT
 )
 
 from .client import Client
@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 ################################################################
 # creates fake buckets root path
 ################################################################
+CONFIG = get_config()
 DEBUG = False
 FAKE_BUCKETS_ROOT_DIR = CONFIG['FAKE_BUCKETS_ROOT_DIR']
 PROJECT_DIRNAME = CONFIG['PROJECT_DIRNAME']

@@ -1,8 +1,9 @@
 import logging
-from .config import CONFIG
+from .config import get_config
 from util import logged
 
 logger = logging.getLogger(__name__)
+CONFIG = get_config()
 LOG_PREFIX = CONFIG['LOG_PREFIX']
 AUTO_CREATE_DIRS = CONFIG['AUTO_CREATE_DIRS']
 

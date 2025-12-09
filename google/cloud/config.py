@@ -13,6 +13,7 @@ DEFAULT_CONFIG = {
     "AUTO_CREATE_DIRS": True
 }
 
+CONFIG = None
 
 def find_project_root(project_dir_name:str=None) -> Path:
     '''
@@ -85,7 +86,7 @@ def _find_config(
     return config_json
 
 
-def get_config(
+def get_base_config(
     config_json_filename:str = 'gcs.json',
     project_root_path:Path=None
 ) -> dict[str, str]:
@@ -111,11 +112,24 @@ def get_config(
     return config
 
 
-PROJECT_ROOT = find_project_root()
-logger.info(f'{PROJECT_ROOT = }')
-CONFIG = get_config(project_root_path=PROJECT_ROOT)
-logger.info(f'original {CONFIG = }')
-CONFIG['PROJECT_ROOT'] = CONFIG.get('PROJECT_ROOT') or str(PROJECT_ROOT)
-CONFIG['PROJECT_DIRNAME'] = CONFIG.get('PROJECT_DIRNAME') or PROJECT_ROOT.name
-CONFIG['FAKE_BUCKETS_ROOT'] = CONFIG.get('FAKE_BUCKETS_ROOT') or str(PROJECT_ROOT / CONFIG['FAKE_BUCKETS_ROOT_DIR'])
-logger.info(f'fixed {CONFIG = }')
+def get_config(
+    config_json_filename:str = 'gcs.json',
+    project_root_path:Path=None,
+    force:bool=False
+) -> dict[str, str]:
+    global CONFIG
+
+    if not CONFIG or force:
+        logger.warning(f'reloading config')
+        PROJECT_ROOT = project_root_path or find_project_root()
+        logger.info(f'{PROJECT_ROOT = }')
+        # CONFIG = get_config(project_root_path=PROJECT_ROOT)
+        CONFIG = get_base_config(config_json_filename, PROJECT_ROOT)
+        logger.info(f'original {CONFIG = }')
+        CONFIG['PROJECT_ROOT'] = CONFIG.get('PROJECT_ROOT') or str(PROJECT_ROOT)
+        CONFIG['PROJECT_DIRNAME'] = CONFIG.get('PROJECT_DIRNAME') or PROJECT_ROOT.name
+        CONFIG['FAKE_BUCKETS_ROOT'] = CONFIG.get('FAKE_BUCKETS_ROOT') or str(PROJECT_ROOT / CONFIG['FAKE_BUCKETS_ROOT_DIR'])
+        logger.info(f'fixed {CONFIG = }')
+    else:
+        logger.info(f'using cached config')
+    return CONFIG
