@@ -1,10 +1,12 @@
 import logging
+from google.cloud import storage
+
+
 logging.basicConfig(
     format='%(asctime)s | %(levelname)-8s | %(module)10s | %(funcName)15s | %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
     level=logging.INFO
 )
-from google.cloud import storage
 
 logger = logging.getLogger(__name__)
 

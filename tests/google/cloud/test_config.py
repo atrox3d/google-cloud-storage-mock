@@ -3,12 +3,6 @@ import sys
 import shutil
 import pytest
 import logging
-logging.basicConfig(
-    format='%(asctime)s | %(levelname)-8s | %(module)10s | %(funcName)15s | %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    level=logging.INFO
-)
-
 from google.cloud.config import (
     # __CONFIG, 
     find_project_root, 
@@ -16,6 +10,12 @@ from google.cloud.config import (
     _find_config
 )
 
+
+logging.basicConfig(
+    format='%(asctime)s | %(levelname)-8s | %(module)10s | %(funcName)15s | %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    level=logging.INFO
+)
 
 logger = logging.getLogger(__name__)
 
