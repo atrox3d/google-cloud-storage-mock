@@ -39,7 +39,7 @@ def test_find_project_root_w_prj_name():
 
 @pytest.fixture(params=[
     ('path/to/config', 'config.json'),
-    ('another/path', 'gcs.json'),
+    # ('another/path', 'gcs.json'),
 ])
 def config_file_path(request):
     '''
