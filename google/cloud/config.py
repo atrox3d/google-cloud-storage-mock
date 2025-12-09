@@ -14,6 +14,39 @@ DEFAULT_CONFIG = {
 }
 
 
+def find_project_root(project_dir_name:str=None) -> Path:
+    '''
+    tries to find the path of the project root directory
+    if project_dir_name is None assumes the first entry in sys.path
+    
+    :param project_dir_name: name of the project root directory
+    :type project_dir_name: str
+    :return: the path of the project root directory
+    :rtype: Path
+    :raises FileNotFoundError: if the project root directory cannot be found
+    '''
+    if project_dir_name:
+        pwd = Path.cwd()
+        logger.info(f'searching for {project_dir_name} inside {pwd}...')
+        while pwd.name != project_dir_name:
+            pwd = pwd.parent
+            if pwd == Path('/').resolve():
+                # we reached the root of the fs without finding it
+                raise FileNotFoundError(f'cannot find {project_dir_name}')
+        project_root_path = pwd
+    else:
+        logger.info('no project name specified, trying to find project root in sys.path...')
+        # try to skip python path injected from pytest
+        if 'test' in sys.path[0]:
+            logger.info(f'sys.path[0] contains test, probable pytest inject, using sys.path[1]')
+            logger.info(f'{sys.path[1] = } ')
+            project_root_path = Path(sys.path[1])
+        else:
+            logger.info(f'{sys.path[0] = } ')
+            project_root_path = Path(sys.path[0])
+    return project_root_path
+
+
 def _find_config(
     config_json_filename:str,
     project_root_path:Path=None
@@ -76,39 +109,6 @@ def get_config(
         logger.info(f'{config_json} not found, creating default config')
         config = DEFAULT_CONFIG
     return config
-
-
-def find_project_root(project_dir_name:str=None) -> Path:
-    '''
-    tries to find the path of the project root directory
-    if project_dir_name is None assumes the first entry in sys.path
-    
-    :param project_dir_name: name of the project root directory
-    :type project_dir_name: str
-    :return: the path of the project root directory
-    :rtype: Path
-    :raises FileNotFoundError: if the project root directory cannot be found
-    '''
-    if project_dir_name:
-        pwd = Path.cwd()
-        logger.info(f'searching for {project_dir_name} inside {pwd}...')
-        while pwd.name != project_dir_name:
-            pwd = pwd.parent
-            if pwd == Path('/').resolve():
-                # we reached the root of the fs without finding it
-                raise FileNotFoundError(f'cannot find {project_dir_name}')
-        project_root_path = pwd
-    else:
-        logger.info('no project name specified, trying to find project root in sys.path...')
-        # try to skip python path injected from pytest
-        if 'test' in sys.path[0]:
-            logger.info(f'sys.path[0] contains test, probable pytest inject, using sys.path[1]')
-            logger.info(f'{sys.path[1] = } ')
-            project_root_path = Path(sys.path[1])
-        else:
-            logger.info(f'{sys.path[0] = } ')
-            project_root_path = Path(sys.path[0])
-    return project_root_path
 
 
 PROJECT_ROOT = find_project_root()
